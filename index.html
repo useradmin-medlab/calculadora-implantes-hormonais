@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Implantes Hormonais | Instituto My Clinic</title>
+<style>
+:root {
+  --surface-1: #ffffff; --surface-2: #f7f5f2;
+  --border: #e4ddd3; --border-accent: #ad8b5f;
+  --text-primary: #2b2622; --text-secondary: #6b6259; --text-muted: #9a9189; --text-accent: #8a6a3f;
+  --bg-accent: #f3ead9;
+  --text-success: #2f7a4d; --bg-success: #e8f5ec;
+  --text-warning: #b5790f; --bg-warning: #fbf0db;
+  --text-danger: #b3433f; --bg-danger: #fbe9e7; --border-danger: #f0c4c0;
+  --text-pro: #5b6aa8; --bg-pro: #ecedf8;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --radius: 8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { font-family: var(--font-sans); color: var(--text-primary); background: var(--surface-1); }
+body { padding-bottom: 60px; }
+.app-shell { max-width: 1060px; margin: 0 auto; background: var(--surface-1); }
+
+.header { border-bottom: 0.5px solid var(--border); padding: 20px 24px 16px; display: flex; align-items: flex-start; gap: 16px; }
+.logo-block { display: flex; flex-direction: column; gap: 2px; }
+.clinic-name { font-size: 11px; font-weight: 600; color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase; }
+.doc-title { font-size: 20px; font-weight: 600; color: var(--text-primary); line-height: 1.2; }
+.doc-subtitle { font-size: 13px; color: var(--text-secondary); margin-top: 3px; }
+.badge-version { margin-left: auto; background: var(--bg-accent); color: var(--text-accent); font-size: 11px; padding: 4px 10px; border-radius: var(--radius); font-weight: 600; white-space: nowrap; }
+
+.nav { display: flex; border-bottom: 0.5px solid var(--border); overflow-x: auto; padding: 0 24px; position: sticky; top: 0; z-index: 20; background: var(--surface-1); }
+.nav-btn { background: none; border: none; border-bottom: 2px solid transparent; padding: 11px 13px; font-size: 12.5px; font-weight: 500; color: var(--text-secondary); cursor: pointer; white-space: nowrap; transition: .15s; font-family: inherit; }
+.nav-btn.active { color: var(--text-accent); border-bottom-color: var(--border-accent); }
+.nav-btn:hover:not(.active) { color: var(--text-primary); }
+
+.content { padding: 20px 24px; }
+.section { display: none; }
+.section.active { display: block; }
+.section-title { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+.section-desc { font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.5; }
+.subhead { font-size: 12px; font-weight: 700; color: var(--text-accent); margin: 20px 0 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+.info-box { background: var(--bg-accent); border: 0.5px solid var(--border-accent); border-radius: var(--radius); padding: 10px 14px; font-size: 13px; color: var(--text-accent); margin-bottom: 16px; line-height: 1.5; }
+.warn-box { background: var(--bg-danger); border: 0.5px solid var(--border-danger); border-radius: var(--radius); padding: 10px 14px; font-size: 12.5px; color: var(--text-danger); margin-bottom: 16px; line-height: 1.5; }
+.success-box { background: var(--bg-success); border: 0.5px solid #c7e6cf; border-radius: var(--radius); padding: 10px 14px; font-size: 13px; color: var(--text-success); margin-bottom: 16px; line-height: 1.5; }
+.pro-box { background: var(--bg-pro); border: 0.5px solid #cdd2ef; border-radius: var(--radius); padding: 10px 14px; font-size: 13px; color: var(--text-pro); margin-bottom: 16px; line-height: 1.5; }
+
+.field-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.field input, .field select { font-family: inherit; font-size: 14px; padding: 9px 11px; border: 0.5px solid var(--border); border-radius: var(--radius); background: var(--surface-1); color: var(--text-primary); width: 100%; transition: border-color .15s; }
+.field input:focus, .field select:focus { outline: none; border-color: var(--border-accent); }
+.helper { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
+.input-unit { display: flex; gap: 6px; }
+.input-unit input { flex: 1; }
+.input-unit select { width: 92px; font-size: 12px; padding: 9px 6px; }
+
+.chip-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+.chip-check { display: inline-flex; align-items: center; gap: 6px; background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 20px; padding: 7px 13px; font-size: 12.5px; color: var(--text-secondary); cursor: pointer; user-select: none; transition: .15s; }
+.chip-check:hover { border-color: var(--border-accent); }
+.chip-check.on { background: var(--bg-accent); border-color: var(--border-accent); color: var(--text-accent); font-weight: 600; }
+.chip-check.danger.on { background: var(--bg-danger); border-color: var(--border-danger); color: var(--text-danger); }
+.chip-check input { display: none; }
+
+.calc-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+.cc { background: var(--surface-2); border: 0.5px solid var(--border); border-radius: 10px; padding: 12px; }
+.cc-label { font-size: 10.5px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
+.cc-val { font-size: 20px; font-weight: 700; color: var(--text-accent); }
+.cc-unit { font-size: 11px; color: var(--text-secondary); font-weight: 400; }
+.cc-sub { font-size: 11px; margin-top: 3px; }
+.cc.ok { background: var(--bg-success); border-color: #c7e6cf; } .cc.ok .cc-val { color: var(--text-success); }
+.cc.low { background: var(--bg-warning); border-color: #f0d9a8; } .cc.low .cc-val { color: var(--text-warning); }
+.cc.high { background: var(--bg-danger); border-color: var(--border-danger); } .cc.high .cc-val { color: var(--text-danger); }
+
+.target-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+.target-table th { font-size: 11px; font-weight: 600; color: var(--text-muted); text-align: left; padding: 8px 10px; border-bottom: 0.5px solid var(--border); text-transform: uppercase; letter-spacing: 0.05em; }
+.target-table td { font-size: 12.5px; padding: 9px 10px; border-bottom: 0.5px solid var(--border); }
+.target-table tr:last-child td { border-bottom: none; }
+.pill { font-size: 10.5px; padding: 2px 8px; border-radius: 20px; font-weight: 700; }
+.pill.ok { background: var(--bg-success); color: var(--text-success); }
+.pill.low { background: var(--bg-warning); color: var(--text-warning); }
+.pill.high { background: var(--bg-danger); color: var(--text-danger); }
+.pill.na { background: var(--surface-2); color: var(--text-muted); }
+
+.suggest-panel { background: var(--bg-accent); border: 0.5px solid var(--border-accent); border-radius: 12px; padding: 16px; margin-bottom: 18px; }
+.suggest-title { font-size: 14px; font-weight: 600; color: var(--text-accent); margin-bottom: 10px; }
+.suggest-row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.suggest-val { font-size: 26px; font-weight: 700; color: var(--text-accent); }
+.suggest-formula { font-size: 12px; color: var(--text-secondary); font-family: monospace; background: var(--surface-1); padding: 6px 10px; border-radius: 6px; margin-top: 10px; border: 0.5px solid var(--border); }
+
+.hormone-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 14px; }
+.hormone-card { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 12px; padding: 16px; transition: border-color .15s; }
+.hormone-card:hover { border-color: var(--border-accent); }
+.hormone-card.aromat { border-left: 3px solid var(--text-warning); }
+.hormone-card.ai { border-left: 3px solid var(--text-pro); }
+.hormone-card-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.hormone-num { background: var(--text-accent); color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+.hormone-card-title { font-size: 14px; font-weight: 600; flex: 1; }
+.flag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 3px 7px; border-radius: 4px; }
+.flag-w { background: var(--bg-warning); color: var(--text-warning); }
+.flag-p { background: var(--bg-pro); color: var(--text-pro); }
+.btn-remove { background: var(--bg-danger); color: var(--text-danger); border: none; border-radius: var(--radius); padding: 5px 10px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; }
+.btn-remove:hover { opacity: .8; }
+.hormone-inputs { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 10px; }
+.hormone-result { margin-top: 12px; padding-top: 12px; border-top: 0.5px solid var(--border); display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.mini-metric { background: var(--surface-2); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 9px 11px; }
+.mini-metric-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 3px; }
+.mini-metric-val { font-size: 16px; font-weight: 700; color: var(--text-accent); }
+.mini-metric-unit { font-size: 10.5px; color: var(--text-secondary); font-weight: 400; }
+.qty-wrap { display: flex; }
+.qty-btn { background: var(--surface-2); border: 0.5px solid var(--border); width: 34px; font-size: 16px; cursor: pointer; color: var(--text-accent); font-weight: 700; }
+.qty-btn:first-child { border-radius: var(--radius) 0 0 var(--radius); }
+.qty-btn:last-child { border-radius: 0 var(--radius) var(--radius) 0; }
+.qty-wrap input { text-align: center; border-radius: 0; border-left: none; border-right: none; }
+
+.btn-add { background: var(--bg-accent); color: var(--text-accent); border: 0.5px dashed var(--border-accent); border-radius: var(--radius); padding: 11px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; width: 100%; margin-bottom: 14px; }
+.btn-add:hover { background: #eaddc4; }
+.btn { background: var(--text-accent); color: #fff; border: none; border-radius: var(--radius); padding: 10px 16px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; }
+.btn:hover { opacity: .9; }
+.btn-ghost { background: var(--surface-1); color: var(--text-accent); border: 0.5px solid var(--border-accent); }
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+
+.optimizer { background: var(--surface-2); border: 0.5px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; }
+.opt-row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+.opt-result { font-size: 13px; color: var(--text-accent); font-weight: 600; margin-top: 10px; }
+
+.summary-panel { background: var(--surface-2); border: 0.5px solid var(--border-accent); border-radius: 12px; padding: 18px; margin-bottom: 16px; }
+.summary-title { font-size: 15px; font-weight: 600; color: var(--text-accent); margin-bottom: 14px; }
+.speed-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.speed-card { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 10px; padding: 12px; text-align: center; }
+.speed-card-label { font-size: 11px; color: var(--text-muted); margin-bottom: 5px; }
+.speed-card-val { font-size: 22px; font-weight: 700; color: var(--text-accent); }
+.speed-card-unit { font-size: 11px; color: var(--text-secondary); }
+
+.rx-block { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+.rx-title { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+.rx-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; gap: 10px; }
+.rx-row:last-child { border-bottom: none; }
+.rx-conc { font-weight: 600; color: var(--text-accent); white-space: nowrap; }
+.rx-empty { font-size: 13px; color: var(--text-muted); text-align: center; padding: 12px 0; }
+
+.risk-panel { border-radius: 12px; padding: 18px; margin-bottom: 16px; border: 0.5px solid var(--border); }
+.risk-panel.baixo { background: var(--bg-success); border-color: #c7e6cf; }
+.risk-panel.moderado { background: var(--bg-warning); border-color: #f0d9a8; }
+.risk-panel.alto { background: var(--bg-danger); border-color: var(--border-danger); }
+.risk-level { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+.risk-panel.baixo .risk-level { color: var(--text-success); }
+.risk-panel.moderado .risk-level { color: var(--text-warning); }
+.risk-panel.alto .risk-level { color: var(--text-danger); }
+.risk-sub { font-size: 13px; color: var(--text-secondary); }
+.risk-bar { height: 8px; border-radius: 4px; background: var(--surface-1); margin: 12px 0; overflow: hidden; border: 0.5px solid var(--border); }
+.risk-fill { height: 100%; transition: width .3s; }
+.risk-factors { list-style: none; margin-top: 10px; }
+.risk-factors li { font-size: 12.5px; color: var(--text-secondary); padding: 3px 0; }
+.risk-factors li::before { content: "▸ "; color: var(--text-accent); }
+
+.timeline-row { display: flex; gap: 12px; margin-bottom: 10px; font-size: 13px; }
+.timeline-day { font-weight: 700; color: var(--text-accent); min-width: 90px; flex-shrink: 0; }
+.timeline-desc { color: var(--text-secondary); line-height: 1.5; }
+
+.actives-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+.actives-table th { font-size: 11px; font-weight: 600; color: var(--text-muted); text-align: left; padding: 9px 10px; border-bottom: 0.5px solid var(--border); text-transform: uppercase; letter-spacing: 0.05em; }
+.actives-table td { font-size: 12.5px; padding: 9px 10px; border-bottom: 0.5px solid var(--border); vertical-align: top; line-height: 1.5; }
+.actives-table tr:last-child td { border-bottom: none; }
+.actives-table tr:hover td { background: var(--surface-2); }
+.grp-row td { background: var(--surface-2) !important; font-weight: 700; color: var(--text-accent); text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; }
+
+.ref-item { font-size: 12px; color: var(--text-secondary); line-height: 1.6; padding: 7px 0; border-bottom: 0.5px solid var(--border); }
+.ref-item:last-child { border-bottom: none; }
+.ref-item strong { color: var(--text-primary); }
+
+.hist-item { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.hist-item:hover { border-color: var(--border-accent); }
+.hist-info { font-size: 13px; }
+.hist-info strong { color: var(--text-primary); }
+.hist-meta { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
+.hist-actions { display: flex; gap: 6px; }
+.hist-btn { font-size: 11.5px; padding: 5px 10px; border-radius: 6px; border: 0.5px solid var(--border-accent); background: var(--surface-1); color: var(--text-accent); cursor: pointer; font-family: inherit; font-weight: 600; }
+.recall-soon { color: var(--text-danger); font-weight: 700; }
+
+::-webkit-scrollbar { height: 6px; width: 6px; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+@media (max-width: 760px) {
+  .field-grid, .calc-cards { grid-template-columns: repeat(2, 1fr); }
+  .hormone-inputs { grid-template-columns: 1fr; }
+  .hormone-result, .speed-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media print { .nav, .btn-add, .btn, .btn-remove, .qty-btn, .hist-actions { display: none; } .content { padding: 0; } }
+</style>
+</head>
+<body>
+<div class="app-shell">
+
+  <div class="header">
+    <div class="logo-block">
+      <span class="clinic-name">Instituto My Clinic</span>
+      <span class="doc-title">Calculadora de Implantes Hormonais</span>
+      <span class="doc-subtitle">Titulação por exame · testosterona livre (Vermeulen) · segurança · histórico</span>
+    </div>
+    <span class="badge-version">Rev. 2026 · v4</span>
+  </div>
+
+  <div class="nav">
+    <button class="nav-btn active" onclick="showTab('paciente', this)">Paciente & Exames</button>
+    <button class="nav-btn" onclick="showTab('calc', this)">Cálculo & Composição</button>
+    <button class="nav-btn" onclick="showTab('aromat', this)">Aromatização</button>
+    <button class="nav-btn" onclick="showTab('seg', this)">Segurança</button>
+    <button class="nav-btn" onclick="showTab('doencas', this)">Doses por condição</button>
+    <button class="nav-btn" onclick="showTab('hist', this)">Histórico</button>
+    <button class="nav-btn" onclick="showTab('tabelas', this)">Tabelas</button>
+    <button class="nav-btn" onclick="showTab('ref', this)">Referências</button>
+  </div>
+
+  <div class="content">
+
+    <!-- ========== PACIENTE & EXAMES ========== -->
+    <div id="tab-paciente" class="section active">
+      <div class="warn-box"><strong>Apoio à decisão — não prescreve.</strong> A dose por composição corporal é apenas ponto de partida; a assertividade vem da titulação por exame. Toda conduta é do médico prescritor, com confirmação laboratorial e monitorização. Faixas-alvo variam conforme o ensaio do laboratório.</div>
+
+      <div class="section-title">Dados do paciente</div>
+      <div class="field-grid">
+        <div class="field"><label>Nome / ID</label><input type="text" id="p-nome" placeholder="Identificação"></div>
+        <div class="field"><label>Sexo</label><select id="p-sexo" onchange="recalcAll()"><option value="F">Feminino</option><option value="M">Masculino</option></select></div>
+        <div class="field"><label>Status</label><select id="p-status" onchange="recalcAll()"><option value="pre">Pré-menopausa</option><option value="pos">Pós-menopausa</option><option value="na">Não se aplica</option></select></div>
+        <div class="field"><label>Idade</label><input type="number" id="p-idade" placeholder="anos" oninput="recalcAll()"></div>
+        <div class="field"><label>Peso (kg)</label><input type="number" id="p-peso" step="0.5" oninput="recalcAll()"></div>
+        <div class="field"><label>Altura (cm)</label><input type="number" id="p-altura" oninput="recalcAll()"></div>
+        <div class="field"><label>% Gordura</label><input type="number" id="p-gordura" step="0.5" oninput="recalcAll()"><span class="helper" id="imc-hint">IMC c/ peso + altura</span></div>
+        <div class="field"><label>Útero presente</label><select id="p-utero" onchange="recalcAll()"><option value="sim">Sim</option><option value="nao">Não / histerectomia</option><option value="na">Não se aplica</option></select></div>
+      </div>
+
+      <div class="subhead">Exames laboratoriais basais</div>
+      <div class="section-desc">Preencha o que tiver. A testosterona livre e biodisponível são calculadas por Vermeulen (total + SHBG + albumina).</div>
+      <div class="field-grid">
+        <div class="field"><label>Testosterona total</label><div class="input-unit"><input type="number" id="lab-tt" step="1" oninput="recalcAll()"><select id="un-tt" onchange="recalcAll()"><option value="ngdl">ng/dL</option><option value="nmol">nmol/L</option></select></div></div>
+        <div class="field"><label>SHBG (nmol/L)</label><input type="number" id="lab-shbg" step="1" oninput="recalcAll()"></div>
+        <div class="field"><label>Albumina (g/dL)</label><input type="number" id="lab-alb" step="0.1" value="4.3" oninput="recalcAll()"></div>
+        <div class="field"><label>Estradiol (E2)</label><div class="input-unit"><input type="number" id="lab-e2" step="1" oninput="recalcAll()"><select id="un-e2" onchange="recalcAll()"><option value="pgml">pg/mL</option><option value="pmol">pmol/L</option></select></div></div>
+        <div class="field"><label>Estrona (E1) pg/mL</label><input type="number" id="lab-e1" step="1" oninput="recalcAll()"></div>
+        <div class="field"><label>FSH (mUI/mL)</label><input type="number" id="lab-fsh" step="1" oninput="recalcAll()"></div>
+        <div class="field"><label>Hematócrito (%)</label><input type="number" id="lab-hct" step="0.5" oninput="recalcAll()"></div>
+        <div class="field"><label>Progesterona (ng/mL)</label><input type="number" id="lab-prog" step="0.1" oninput="recalcAll()"></div>
+      </div>
+
+      <div class="subhead">Testosterona bioativa (Vermeulen)</div>
+      <div class="calc-cards" id="vermeulen-cards"></div>
+
+      <div class="subhead">Comparação com a faixa-alvo</div>
+      <table class="target-table"><thead><tr><th>Parâmetro</th><th>Valor do paciente</th><th>Faixa-alvo de referência</th><th>Status</th></tr></thead><tbody id="target-body"></tbody></table>
+      <div class="info-box" id="target-note"></div>
+    </div>
+
+    <!-- ========== CÁLCULO & COMPOSIÇÃO ========== -->
+    <div id="tab-calc" class="section">
+      <div class="suggest-panel">
+        <div class="suggest-title">Sugestão de protocolo inicial (automática)</div>
+        <div class="section-desc" style="margin-bottom:10px;">Atualiza sozinha conforme sexo, status, comorbidades marcadas (aba Segurança), exames e regras de segurança. Doses de referência — titular por exame.</div>
+        <div id="suggest-list"></div>
+        <div class="field" style="max-width:240px; margin-top:12px;"><label>Fator de ajuste (♀ testosterona)</label><input type="number" id="p-fator" value="0.3" min="0.1" max="1" step="0.05" oninput="recalcAll()"><span class="helper">Usado só na estimativa feminina de testosterona.</span></div>
+      </div>
+
+      <div class="section-title">Otimizador de pellets</div>
+      <div class="section-desc">Informe a carga-alvo de um ativo; o sistema sugere a combinação com o menor número de pellets.</div>
+      <div class="optimizer">
+        <div class="opt-row">
+          <div class="field" style="min-width:170px;"><label>Ativo</label><select id="opt-ativo"></select></div>
+          <div class="field" style="min-width:130px;"><label>Carga-alvo (mg)</label><input type="number" id="opt-alvo" step="5" placeholder="ex: 150"></div>
+          <button class="btn" onclick="runOptimizer()">Otimizar</button>
+          <button class="btn btn-ghost" onclick="applyOptimizer()">Adicionar ao implante</button>
+        </div>
+        <div class="opt-result" id="opt-result"></div>
+      </div>
+
+      <div class="section-title">Hormônios do implante</div>
+      <div class="section-desc">Escolha ativo e dosagem do pellet (dados reais das tabelas). Liberação e duração são automáticas.</div>
+      <div class="hormone-list" id="hormone-list"></div>
+      <button class="btn-add" onclick="addHormone()">+ Adicionar hormônio</button>
+
+      <div class="summary-panel">
+        <div class="summary-title">Resumo do implante</div>
+        <div class="speed-grid">
+          <div class="speed-card"><div class="speed-card-label">Pellets</div><div class="speed-card-val" id="s-pellets">0</div><div class="speed-card-unit">unidades</div></div>
+          <div class="speed-card"><div class="speed-card-label">Carga hormonal</div><div class="speed-card-val" id="s-mg">0</div><div class="speed-card-unit">mg totais</div></div>
+          <div class="speed-card"><div class="speed-card-label">Duração</div><div class="speed-card-val" id="s-dur">—</div><div class="speed-card-unit">meses</div></div>
+          <div class="speed-card"><div class="speed-card-label">Custo</div><div class="speed-card-val" id="s-custo">—</div><div class="speed-card-unit">R$</div></div>
+        </div>
+        <div class="field" style="max-width:220px; margin-top:14px;"><label>Custo por mg (R$)</label><input type="number" id="custo-mg" step="0.01" oninput="recalcAll()"></div>
+      </div>
+
+      <div id="calc-alerts"></div>
+
+      <div class="rx-block">
+        <div class="rx-title">Composição consolidada — pedido à farmácia</div>
+        <div id="rx-list"><div class="rx-empty">Adicione hormônios.</div></div>
+      </div>
+
+      <div class="section-title">Cronograma de monitorização</div>
+      <div class="rx-block" id="monitor-block"></div>
+
+      <div class="btn-row">
+        <button class="btn" onclick="saveCurrent()">Salvar no histórico</button>
+        <button class="btn btn-ghost" onclick="window.print()">Imprimir / PDF</button>
+      </div>
+    </div>
+
+    <!-- ========== AROMATIZAÇÃO ========== -->
+    <div id="tab-aromat" class="section">
+      <div class="section-title">Risco de aromatização</div>
+      <div class="section-desc">A aromatase (CYP19) do tecido adiposo converte testosterona em estradiol. O risco combina perfil do paciente, estradiol basal e carga androgênica do implante.</div>
+      <div id="risk-container"></div>
+      <div class="subhead">Conduta sugerida</div>
+      <div id="manage-container"></div>
+      <div class="subhead">Estratégias de manejo</div>
+      <div class="rx-block">
+        <div class="rx-row"><span><strong>1. Inibidor de aromatase (anastrozol)</strong> — bloqueia T→E2</span><span class="rx-conc">1ª linha</span></div>
+        <div class="rx-row"><span>&nbsp;&nbsp;Oral 1 mg/dia (supressão E2 &gt;80% pós-menopausa); homem c/ E2 alto: 0,5 mg 3×/sem</span><span class="rx-conc">ref.</span></div>
+        <div class="rx-row"><span>&nbsp;&nbsp;Co-implante ~6–8 mg (mulher)/100–120 mg testo; ~16 mg (homem)</span><span class="rx-conc">ref.</span></div>
+        <div class="rx-row"><span><strong>2.</strong> Reduzir % de gordura corporal</span><span class="rx-conc">base</span></div>
+        <div class="rx-row"><span><strong>3.</strong> Tratar resistência insulínica / reduzir etilismo</span><span class="rx-conc">adjuvante</span></div>
+        <div class="rx-row"><span><strong>4.</strong> Reavaliar a dose de testosterona</span><span class="rx-conc">ajuste</span></div>
+        <div class="rx-row"><span><strong>5.</strong> Monitorar estradiol antes e durante</span><span class="rx-conc">obrigatório</span></div>
+      </div>
+      <div class="warn-box">O estradiol protege osso, coração e cognição — suprimir em excesso também é danoso. O objetivo é equilíbrio, não zerar o E2. Uso de anastrozol é decisão médica individualizada.</div>
+    </div>
+
+    <!-- ========== SEGURANÇA ========== -->
+    <div id="tab-seg" class="section">
+      <div class="section-title">Triagem de segurança</div>
+      <div class="section-desc">Marque o que se aplica. Os alertas são gerados conforme os hormônios adicionados ao implante.</div>
+
+      <div class="subhead">Contraindicações e fatores de risco</div>
+      <div class="chip-group" id="contra-group"></div>
+
+      <div class="subhead">Comorbidades / contexto do paciente</div>
+      <div class="chip-group" id="comorb-group"></div>
+      <div id="recs-container"></div>
+
+
+      <div class="subhead">Alertas gerados</div>
+      <div id="seg-alerts"><div class="info-box">Sem alertas no momento. Preencha os dados do paciente e monte o implante.</div></div>
+
+      <div class="subhead">Proteção endometrial</div>
+      <div id="endo-alert"></div>
+      <div class="info-box">Regra geral de TRH: mulher com útero presente recebendo estrogênio necessita de progestágeno associado para proteção do endométrio (risco de hiperplasia/câncer endometrial com estrogênio sem oposição).</div>
+    </div>
+
+    <!-- ========== DOSES POR CONDIÇÃO ========== -->
+    <div id="tab-doencas" class="section">
+      <div class="section-title">Doses de referência por condição</div>
+      <div class="section-desc">Doses mínimas eficazes da literatura. Referências científicas, não prescrição. A via em pellet difere de oral/transdérmica.</div>
+      <table class="actives-table"><thead><tr><th>Condição</th><th>Ativo</th><th>Dose mínima eficaz (literatura)</th><th>Equivalente / pellet</th></tr></thead><tbody id="doencas-body"></tbody></table>
+      <div class="warn-box"><strong>Regulatório (Brasil).</strong> Gestrinona sem registro ANVISA para endometriose; SBEM/FEBRASGO alertam sobre implantes e uso estético. Testosterona/estradiol em pellet são off-label em muitos cenários.</div>
+      <div class="info-box">Princípio das diretrizes de TRH: menor dose eficaz pelo menor tempo compatível com os objetivos, reavaliando a cada 3–6 meses.</div>
+    </div>
+
+    <!-- ========== HISTÓRICO ========== -->
+    <div id="tab-hist" class="section">
+      <div class="section-title">Histórico & reinserção</div>
+      <div class="section-desc">Registros salvos ficam neste arquivo (quando aberto no navegador) e podem ser exportados/importados como backup portátil (JSON).</div>
+      <div class="field-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+        <div class="field"><label>Data da inserção</label><input type="date" id="ins-data"></div>
+        <div class="field"><label>Local / lado</label><input type="text" id="ins-local" placeholder="ex: glúteo D"></div>
+        <div class="field"><label>Lote do pellet</label><input type="text" id="ins-lote" placeholder="rastreabilidade"></div>
+      </div>
+      <div class="field"><label>Observações</label><input type="text" id="ins-obs" placeholder="notas clínicas"></div>
+      <div class="btn-row" style="margin-top:12px;">
+        <button class="btn" onclick="saveCurrent()">Salvar registro atual</button>
+        <button class="btn btn-ghost" onclick="exportJSON()">Exportar backup (JSON)</button>
+        <button class="btn btn-ghost" onclick="document.getElementById('import-file').click()">Importar backup</button>
+        <input type="file" id="import-file" accept="application/json" style="display:none" onchange="importJSON(event)">
+      </div>
+      <div class="subhead">Registros salvos</div>
+      <div id="hist-list"><div class="rx-empty">Nenhum registro salvo ainda.</div></div>
+    </div>
+
+    <!-- ========== TABELAS ========== -->
+    <div id="tab-tabelas" class="section">
+      <div class="section-title">Tabelas de liberação diária</div>
+      <div class="section-desc">Dados reais de pellets absorvíveis. Liberação = média nominal; varia com dose e fatores fisiológicos.</div>
+      <table class="actives-table"><thead><tr><th>Ativo / dosagem</th><th>Liberação/dia</th><th>Duração</th><th>Pellet</th><th>Trocarte</th><th>Fabricante</th></tr></thead><tbody id="tabelas-body"></tbody></table>
+      <div class="info-box">Fontes: Biòs Farmacêutica — Tabela de Liberação Diária; Biomeds Pharma — Informações Técnicas (jan/2026). * Controle especial: Portaria nº 344/1998.</div>
+    </div>
+
+    <!-- ========== REFERÊNCIAS ========== -->
+    <div id="tab-ref" class="section">
+      <div class="section-title">Método e referências</div>
+      <div class="subhead">Fórmulas</div>
+      <div class="rx-block">
+        <div class="rx-row"><span>Testosterona livre / biodisponível</span><span class="rx-conc">Vermeulen (total + SHBG + albumina)</span></div>
+        <div class="rx-row"><span>Liberação diária total</span><span class="rx-conc">nº pellets × liberação/pellet</span></div>
+        <div class="rx-row"><span>Sugestão de testosterona</span><span class="rx-conc">Peso × %gordura × fator + (100 − Idade)</span></div>
+        <div class="rx-row"><span>Otimizador</span><span class="rx-conc">combinação gulosa, menor nº de pellets</span></div>
+        <div class="rx-row"><span>Co-implante de anastrozol</span><span class="rx-conc">~6–8 mg / 100–120 mg testo (mulher)</span></div>
+      </div>
+      <div class="subhead">Conversões</div>
+      <div class="rx-block">
+        <div class="rx-row"><span>Testosterona</span><span class="rx-conc">ng/dL × 0,03467 = nmol/L</span></div>
+        <div class="rx-row"><span>Estradiol</span><span class="rx-conc">pg/mL × 3,671 = pmol/L</span></div>
+      </div>
+      <div class="subhead">Referências científicas</div>
+      <div class="rx-block">
+        <div class="ref-item"><strong>Testosterona livre/biodisponível:</strong> Vermeulen A et al., 1999; calculadora ISSAM/Univ. Ghent. Total isolada é pouco confiável; SHBG determina a fração bioativa.</div>
+        <div class="ref-item"><strong>Alvos séricos:</strong> homem — pico terapêutico ~900–1100 ng/dL, reinserção quando &lt;500–600; mulher pós-menopausa total ~10–55 ng/dL (LC-MS/MS), acima = suprafisiológico. Método BioTE; revisão narrativa PubMed 1980–2025.</div>
+        <div class="ref-item"><strong>Liberação dos pellets:</strong> Biòs Farmacêutica; Biomeds Pharma (jan/2026).</div>
+        <div class="ref-item"><strong>Estradiol — dose mínima:</strong> osteoporose transdérmico 0,025 mg/dia ou oral micronizado 0,5 mg/dia; vasomotores 1–2 mg/dia oral, à menor dose eficaz.</div>
+        <div class="ref-item"><strong>Gestrinona:</strong> oral 5 mg/dia ≈ amenorreia; 2,5 mg 2×/sem ≈ 50–58%. Sem registro ANVISA p/ endometriose; alertas SBEM/FEBRASGO.</div>
+        <div class="ref-item"><strong>Aromatização e anastrozol:</strong> tecido adiposo converte T→E2; obesidade e resistência insulínica aumentam; anastrozol 1 mg/dia suprime E2 &gt;80% (pós-menopausa); co-implante ~8 mg/120 mg testo (mulher), ~16 mg (homem).</div>
+        <div class="ref-item"><strong>Algoritmo de dose por composição corporal:</strong> patente US9351977 (pellet testosterona/anastrozol por peso, gordura e idade). Otimizador e ciclo de vida do paciente: patentes de dosing (ex.: US10573409).</div>
+      </div>
+      <div class="warn-box" style="margin-top:16px;">Material de apoio para profissionais habilitados. Pellets manipulados têm variabilidade interindividual e não substituem exame. Toda prescrição exige avaliação individual e monitorização.</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ========= BASE DE PELLETS (Biòs + Biomeds, conferido jan/2026) =========
+// lib = liberação média mg/dia; esp = diâmetro do pellet (mm); troc = trocarte (mm)
+const PELLETS = {
+  estradiol:{nome:"Estradiol",grupo:"Estrógenos",aromatiza:false,estro:true,doses:[
+    {mg:10,lib:0.08,dMin:4,dMax:6,esp:3.4,troc:3.5,fonte:"Biòs/Biomeds"},{mg:12.5,lib:0.10,dMin:4,dMax:6,esp:3.4,troc:3.5,fonte:"Biomeds"},{mg:15,lib:0.12,dMin:4,dMax:6,esp:3.4,troc:3.5,fonte:"Biòs/Biomeds"},{mg:20,lib:0.16,dMin:4,dMax:6,esp:3.4,troc:3.5,fonte:"Biomeds"},{mg:25,lib:0.20,dMin:4,dMax:6,esp:3.4,troc:3.5,fonte:"Biòs/Biomeds"},{mg:35,lib:0.30,dMin:4,dMax:6,esp:3.4,troc:3.5,fonte:"Biòs/Biomeds"},{mg:50,lib:0.40,dMin:4,dMax:6,esp:4.0,troc:4.5,fonte:"Biòs"}]},
+  estriol:{nome:"Estriol",grupo:"Estrógenos",aromatiza:false,estro:true,doses:[
+    {mg:75,lib:0.50,dMin:4,dMax:6,esp:3.0,troc:3.5,fonte:"Biòs/Biomeds"}]},
+  testosterona:{nome:"Testosterona",grupo:"Androgênios",aromatiza:true,doses:[
+    {mg:25,lib:0.25,dMin:3,dMax:5,esp:3.4,troc:3.5,fonte:"Biomeds"},{mg:50,lib:0.40,dMin:3,dMax:6,esp:3.4,troc:3.5,fonte:"Biòs/Biomeds"},{mg:75,lib:0.60,dMin:4,dMax:6,esp:2.95,troc:3.5,fonte:"Biòs/Biomeds"},{mg:100,lib:0.75,dMin:4,dMax:6,esp:3.45,troc:3.5,fonte:"Biòs/Biomeds"},{mg:125,lib:0.90,dMin:4,dMax:6,esp:4.0,troc:4.5,fonte:"Biòs"},{mg:150,lib:1.00,dMin:4,dMax:6,esp:4.4,troc:4.5,fonte:"Biòs/Biomeds"},{mg:200,lib:1.20,dMin:4,dMax:6,esp:3.95,troc:4.5,fonte:"Biòs/Biomeds"},{mg:300,lib:1.60,dMin:5,dMax:7,esp:4.95,troc:5.0,fonte:"Biòs/Biomeds"},{mg:400,lib:2.20,dMin:5,dMax:7,esp:4.95,troc:5.0,fonte:"Biomeds"}]},
+  gestrinona:{nome:"Gestrinona",grupo:"Progestágenos / moduladores",aromatiza:false,progest:true,doses:[
+    {mg:25,lib:0.25,dMin:3,dMax:4,esp:3.15,troc:3.5,fonte:"Biòs/Biomeds"},{mg:35,lib:0.25,dMin:4,dMax:5,esp:2.90,troc:3.5,fonte:"Biòs/Biomeds"},{mg:40,lib:0.30,dMin:4,dMax:6,esp:3.15,troc:3.5,fonte:"Biòs/Biomeds"},{mg:50,lib:0.40,dMin:4,dMax:6,esp:3.15,troc:3.5,fonte:"Biòs/Biomeds"},{mg:85,lib:0.65,dMin:4,dMax:6,esp:3.45,troc:3.5,fonte:"Biòs/Biomeds"},{mg:100,lib:0.70,dMin:4,dMax:6,esp:3.45,troc:3.5,fonte:"Biòs/Biomeds"}]},
+  progesterona:{nome:"Progesterona",grupo:"Progestágenos / moduladores",aromatiza:false,progest:true,doses:[
+    {mg:50,lib:0.40,dMin:4,dMax:6,esp:2.85,troc:3.5,fonte:"Biomeds"},{mg:100,lib:0.70,dMin:4,dMax:6,esp:3.50,troc:4.5,fonte:"Biomeds"}]},
+  drospirenona:{nome:"Drospirenona",grupo:"Progestágenos / moduladores",aromatiza:false,progest:true,doses:[
+    {mg:50,lib:0.40,dMin:4,dMax:6,esp:2.85,troc:3.5,fonte:"Biòs/Biomeds"},{mg:100,lib:0.70,dMin:4,dMax:6,esp:3.45,troc:4.5,fonte:"Biòs/Biomeds"}]},
+  ciproterona:{nome:"Ciproterona",grupo:"Antiandrogênios",aromatiza:false,progest:true,doses:[
+    {mg:100,lib:0.85,dMin:4,dMax:5,esp:3.45,troc:4.5,fonte:"Biòs"}]},
+  oxandrolona:{nome:"Oxandrolona",grupo:"Androgênios",aromatiza:false,doses:[
+    {mg:25,lib:0.20,dMin:4,dMax:5,esp:3.40,troc:3.5,fonte:"Biòs/Biomeds"},{mg:50,lib:0.40,dMin:4,dMax:6,esp:3.10,troc:3.5,fonte:"Biòs/Biomeds"},{mg:100,lib:0.60,dMin:4,dMax:6,esp:3.40,troc:3.5,fonte:"Biomeds"},{mg:100,lib:0.75,dMin:4,dMax:6,esp:3.40,troc:3.5,fonte:"Biòs"},{mg:200,lib:0.80,dMin:5,dMax:7,esp:4.95,troc:5.0,fonte:"Biomeds"},{mg:200,lib:1.30,dMin:5,dMax:6,esp:4.95,troc:5.0,fonte:"Biòs"}]},
+  tadalafil:{nome:"Tadalafil",grupo:"Outros",aromatiza:false,doses:[
+    {mg:25,lib:0.20,dMin:3,dMax:5,esp:3.15,troc:3.5,fonte:"Biomeds"},{mg:50,lib:0.42,dMin:4,dMax:6,esp:3.10,troc:3.5,fonte:"Biòs/Biomeds"},{mg:200,lib:1.25,dMin:4,dMax:6,esp:4.15,troc:4.5,fonte:"Biòs/Biomeds"}]},
+  nad:{nome:"NAD / NADH",grupo:"Outros",aromatiza:false,doses:[
+    {mg:100,lib:0.60,dMin:3,dMax:5,esp:3.45,troc:3.5,fonte:"Biomeds"},{mg:200,lib:1.25,dMin:4,dMax:6,esp:3.95,troc:4.5,fonte:"Biòs/Biomeds"},{mg:300,lib:1.65,dMin:6,dMax:6,esp:4.95,troc:5.0,fonte:"Biòs"},{mg:400,lib:2.40,dMin:4,dMax:6,esp:4.95,troc:5.0,fonte:"Biomeds"}]},
+  metformina:{nome:"Metformina",grupo:"Metabólicos",aromatiza:false,doses:[
+    {mg:100,lib:0.70,dMin:4,dMax:6,esp:3.11,troc:3.5,fonte:"Biomeds"},{mg:200,lib:1.20,dMin:4,dMax:6,esp:4.10,troc:4.5,fonte:"Biomeds"}]},
+  coenzimaq10:{nome:"Coenzima Q10",grupo:"Outros",aromatiza:false,doses:[
+    {mg:100,lib:0.60,dMin:4,dMax:6,esp:4.20,troc:4.5,fonte:"Biomeds"}]},
+  ocitocina:{nome:"Ocitocina",grupo:"Outros",aromatiza:false,unidade:"UI",doses:[
+    {mg:500,lib:2.75,dMin:4,dMax:6,esp:3.30,troc:3.5,fonte:"Biomeds"}]},
+  anastrozol:{nome:"Anastrozol",grupo:"Inibidor de aromatase",aromatiza:false,ai:true,doses:[
+    {mg:5,lib:0.04,dMin:4,dMax:5,esp:3.20,troc:3.5,fonte:"Biomeds"},{mg:10,lib:0.08,dMin:4,dMax:5,esp:3.40,troc:3.5,fonte:"Biomeds"}]},
+};
+
+const COMORB = [
+  {id:'obesidade',label:'Obesidade'},{id:'ri',label:'Resistência Insulina/DM'},{id:'metab',label:'Síndrome metabólica'},{id:'menopausa',label:'Menopausa'},{id:'endometriose',label:'Endometriose / Adenomiose'},{id:'osteo',label:'Osteopenia / Osteoporose'},{id:'hsdd',label:'Desejo Sex. Hipoativo'},{id:'impotencia',label:'Impotência'},{id:'sarcopenia',label:'Sarcopenia'},{id:'massamagra',label:'Aumento Massa Magra'},
+];
+
+// Recomendações de implante por comorbidade (baseadas em literatura) — dose inicial de referência
+const RECS = {
+  obesidade:[
+    {ativo:'testosterona',dose:'H 100–150 mg · M 50–100 mg',base:'Testosterona ↑ massa magra e ↓ massa gorda; obesos têm T mais baixa e a reposição melhora a composição corporal.'},
+    {ativo:'metformina',dose:'100–200 mg',base:'Suporte metabólico à perda de peso e resistência insulínica.'},
+    {ativo:'anastrozol',dose:'5–10 mg (co-implante) se E2 elevado',base:'Tecido adiposo ↑ aromatase → mais conversão T→E2; IA se aromatização.'},
+  ],
+  ri:[
+    {ativo:'testosterona',dose:'H 100–150 mg',base:'Baixa testosterona associa-se a resistência insulínica; reposição melhora sensibilidade em homens hipogonádicos.'},
+    {ativo:'metformina',dose:'100–200 mg',base:'Sensibilizador de insulina.'},
+  ],
+  metab:[
+    {ativo:'testosterona',dose:'H 100–150 mg',base:'Melhora composição corporal e perfil metabólico em homens com deficiência androgênica.'},
+    {ativo:'metformina',dose:'100–200 mg',base:'Componente de resistência insulínica.'},
+    {ativo:'anastrozol',dose:'5–10 mg se aromatização',base:'Controle de estradiol elevado.'},
+  ],
+  menopausa:[
+    {ativo:'estradiol',dose:'12,5–25 mg',base:'Alívio de sintomas vasomotores e proteção óssea; menor dose eficaz.'},
+    {ativo:'progesterona',dose:'50–100 mg (se útero presente)',base:'Proteção endometrial obrigatória com estrogênio em útero íntegro.'},
+    {ativo:'testosterona',dose:'M 50–100 mg',base:'Libido, energia e composição corporal na transição menopausal.'},
+    {ativo:'estriol',dose:'75 mg',base:'Atrofia / ressecamento vaginal.'},
+  ],
+  endometriose:[
+    {ativo:'gestrinona',dose:'25–50 mg (0,25–0,4 mg/dia)',base:'Antiestrogênico/androgênico; reduz dor pélvica e induz amenorreia. ⚠ Sem registro ANVISA para esta indicação — alertas SBEM/FEBRASGO.'},
+  ],
+  osteo:[
+    {ativo:'estradiol',dose:'10–25 mg (~0,08–0,2 mg/dia)',base:'Estrogênio previne perda óssea pós-menopausa (mantém DMO enquanto em uso).'},
+    {ativo:'testosterona',dose:'M 50–100 mg',base:'Androgênio contribui para massa e densidade óssea.'},
+  ],
+  hsdd:[
+    {ativo:'testosterona',dose:'M 50–150 mg (comum 100) · H 100–150 mg',base:'Testosterona é o esteroide da libido; melhora atividade sexual e satisfação (RCT em mulheres).'},
+  ],
+  impotencia:[
+    {ativo:'tadalafil',dose:'25–50 mg',base:'Inibidor de PDE5 para disfunção erétil.'},
+    {ativo:'testosterona',dose:'H 100–150 mg',base:'Repor se houver hipogonadismo associado (melhora libido e resposta).'},
+  ],
+  sarcopenia:[
+    {ativo:'testosterona',dose:'H 100–150 mg',base:'Melhora massa muscular magra e força em idosos, sem efeitos adversos relevantes.'},
+    {ativo:'oxandrolona',dose:'25–50 mg',base:'Esteroide anabólico — ganho de massa magra (uso médico controlado).'},
+    {ativo:'ocitocina',dose:'500 UI',base:'Efeito trófico em músculo; ↑ massa magra em obesidade sarcopênica (estudo piloto).'},
+    {ativo:'nad',dose:'100–200 mg',base:'Suporte energético mitocondrial adjuvante.'},
+  ],
+  massamagra:[
+    {ativo:'testosterona',dose:'H 100–150 mg · M 50–100 mg',base:'↑ massa magra e força; ↓ massa gorda.'},
+    {ativo:'oxandrolona',dose:'25–50 mg',base:'Anabólico para ganho de massa magra (uso controlado).'},
+    {ativo:'nad',dose:'100–200 mg',base:'Adjuvante energético.'},
+  ],
+};
+const CONTRA = [
+  {id:'cancer_mama',label:'Câncer de mama',hormones:['estro','androgenio'],msg:'Estrogênio contraindicado; testosterona aromatiza a E2 — se usada, considerar inibidor de aromatase e conduta oncológica.'},
+  {id:'cancer_endom',label:'Câncer de endométrio',hormones:['estro'],msg:'Estrogênio sem oposição contraindicado.'},
+  {id:'cancer_prost',label:'Câncer de próstata',hormones:['androgenio'],msg:'Testosterona contraindicada.'},
+  {id:'tev',label:'TVP / TEP prévio ou atual',hormones:['estro'],msg:'Estrogênio aumenta risco tromboembólico — em geral contraindicado; via não-oral tem menor risco, avaliar.'},
+  {id:'avc',label:'AVC / IAM prévio',hormones:['estro'],msg:'Cautela máxima com estrogênio — em geral contraindicado.'},
+  {id:'hepato',label:'Hepatopatia ativa',hormones:['estro','androgenio'],msg:'Metabolismo hepático comprometido — contraindicação relativa a absoluta.'},
+  {id:'sangramento',label:'Sangramento vaginal não diagnosticado',hormones:['estro'],msg:'Investigar antes de qualquer estrogênio.'},
+  {id:'gestacao',label:'Gestação / suspeita',hormones:['estro','androgenio','progest'],msg:'Terapia hormonal contraindicada na gestação.'},
+  {id:'policitemia',label:'Policitemia / Hct elevado',hormones:['androgenio'],msg:'Testosterona eleva hematócrito — monitorar; contraindicação relativa.'},
+  {id:'trombofilia',label:'Trombofilia conhecida',hormones:['estro'],msg:'Risco trombótico aumentado com estrogênio.'},
+];
+
+const DOENCAS = [
+  {cond:'Prevenção de osteoporose (pós-menopausa)',ativo:'Estradiol',dose:'Transdérmico 0,025 mg/dia · oral micronizado 0,5 mg/dia mantém DMO',eq:'Pellet 10–15 mg (~0,08–0,12 mg/dia)'},
+  {cond:'Sintomas vasomotores (fogachos)',ativo:'Estradiol',dose:'Oral 1–2 mg/dia; titular à menor dose eficaz',eq:'Pellet 25–50 mg (~0,2–0,4 mg/dia)'},
+  {cond:'Atrofia / ressecamento vaginal',ativo:'Estriol',dose:'Baixa dose local; sistêmico 0,5–0,6 mg/dia',eq:'Pellet 75 mg (~0,5–0,6 mg/dia)'},
+  {cond:'HSDD / baixa libido (mulher)',ativo:'Testosterona',dose:'Pellet 50–150 mg (comum 100) a cada ~5 meses; titular por sintomas',eq:'Pellet 100 mg (~0,8 mg/dia)'},
+  {cond:'Deficiência androgênica (homem)',ativo:'Testosterona',dose:'150–450 mg a cada 3–6 meses (~1,3 mg/dia); idosos 600–800 mg p/ pico',eq:'2–4 pellets 100–150 mg'},
+  {cond:'Endometriose / adenomiose *',ativo:'Gestrinona',dose:'Oral 5 mg/dia ≈ amenorreia; 2,5 mg 2×/sem ≈ 50–58%',eq:'Pellet 0,25–0,8 mg/dia (25–100 mg)'},
+  {cond:'Hiperandrogenismo / hirsutismo',ativo:'Ciproterona / Drospirenona',dose:'Antiandrogênio conforme quadro',eq:'Ciproterona 100 mg (~0,85 mg/dia)'},
+  {cond:'Estradiol elevado (aromatização)',ativo:'Anastrozol',dose:'Oral 1 mg/dia (supressão E2 >80%); homem TTH 0,5 mg 3×/sem',eq:'Co-implante 6–8 mg (F) / 16 mg (M)'},
+];
+
+// alvos séricos de referência (assay-dependent)
+function alvos() {
+  const sexo = document.getElementById('p-sexo').value;
+  const status = document.getElementById('p-status').value;
+  if (sexo === 'M') return {
+    tt:{min:300,max:1000,unit:'ng/dL',nota:'deficiência <300; pico em pellet ~900–1100; reinserir <500–600'},
+    ft:{min:5,max:21,unit:'ng/dL'},
+    e2:{min:20,max:40,unit:'pg/mL',nota:'>60 (ou 40–60 c/ sintomas) → considerar IA'},
+    shbg:{min:10,max:57,unit:'nmol/L'},
+  };
+  if (status === 'pos') return {
+    tt:{min:10,max:55,unit:'ng/dL',nota:'>55 suprafisiológico (LC-MS/MS)'},
+    ft:{min:0.3,max:1.9,unit:'ng/dL'},
+    e2:{min:null,max:null,unit:'pg/mL',nota:'alvo conforme objetivo terapêutico'},
+    shbg:{min:18,max:144,unit:'nmol/L'},
+  };
+  return {
+    tt:{min:15,max:70,unit:'ng/dL'},
+    ft:{min:0.5,max:2.8,unit:'ng/dL'},
+    e2:{min:30,max:400,unit:'pg/mL',nota:'varia com a fase do ciclo'},
+    shbg:{min:18,max:144,unit:'nmol/L'},
+  };
+}
+
+let counter = 0;
+const hormones = [];
+let history = [];
+
+// ========= NAVEGAÇÃO =========
+function showTab(name, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (name === 'aromat') renderAromat();
+  if (name === 'seg') { renderSeg(); renderRecs(); }
+  if (name === 'hist') renderHistory();
+}
+
+// ========= VERMEULEN =========
+function vermeulen(tt_ngdl, shbg_nmol, alb_gdl) {
+  if (!(tt_ngdl > 0) || !(shbg_nmol > 0)) return null;
+  const KT = 1.0e9, KA = 3.6e4;
+  const T = (tt_ngdl * 0.03467) / 1e9, S = shbg_nmol / 1e9, A = (alb_gdl * 10) / 69000;
+  const N = KA * A + 1, a = N * KT, b = N + KT * (S - T), c = -T;
+  const FT = (-b + Math.sqrt(b*b - 4*a*c)) / (2*a);
+  const freeNmol = FT * 1e9, bioNmol = FT * N * 1e9;
+  const ttNmol = tt_ngdl * 0.03467;
+  return { freeNgdl: freeNmol/0.03467, freePct: freeNmol/ttNmol*100, bioNgdl: bioNmol/0.03467, bioPct: bioNmol/ttNmol*100 };
+}
+function getTT() {
+  const v = parseFloat(document.getElementById('lab-tt').value) || 0;
+  return document.getElementById('un-tt').value === 'nmol' ? v / 0.03467 : v; // -> ng/dL
+}
+function getE2() {
+  const v = parseFloat(document.getElementById('lab-e2').value) || 0;
+  return document.getElementById('un-e2').value === 'pmol' ? v * 0.2724 : v; // -> pg/mL
+}
+
+// ========= EXAMES / ALVOS =========
+function renderLabs() {
+  const tt = getTT(), shbg = parseFloat(document.getElementById('lab-shbg').value)||0, alb = parseFloat(document.getElementById('lab-alb').value)||4.3;
+  const vm = vermeulen(tt, shbg, alb);
+  const a = alvos();
+  const cardsEl = document.getElementById('vermeulen-cards');
+  if (vm) {
+    const ftClass = statusClass(vm.freeNgdl, a.ft);
+    cardsEl.innerHTML = `
+      <div class="cc"><div class="cc-label">Testo total</div><div class="cc-val">${tt.toFixed(0)}<span class="cc-unit"> ng/dL</span></div></div>
+      <div class="cc ${ftClass}"><div class="cc-label">Testo livre</div><div class="cc-val">${vm.freeNgdl.toFixed(2)}<span class="cc-unit"> ng/dL</span></div><div class="cc-sub">${vm.freePct.toFixed(1)}% do total</div></div>
+      <div class="cc"><div class="cc-label">Testo biodisponível</div><div class="cc-val">${vm.bioNgdl.toFixed(0)}<span class="cc-unit"> ng/dL</span></div><div class="cc-sub">${vm.bioPct.toFixed(0)}% do total</div></div>
+      <div class="cc"><div class="cc-label">SHBG</div><div class="cc-val">${shbg||'—'}<span class="cc-unit"> nmol/L</span></div></div>`;
+  } else {
+    cardsEl.innerHTML = `<div class="cc" style="grid-column:1/-1;"><div class="cc-label">Testosterona livre (Vermeulen)</div><div class="cc-sub" style="color:var(--text-muted)">Preencha testosterona total e SHBG para calcular.</div></div>`;
+  }
+
+  // tabela de alvos
+  const e2 = getE2();
+  const rows = [];
+  rows.push(targetRow('Testosterona total', tt ? tt.toFixed(0)+' ng/dL' : null, a.tt, tt));
+  if (vm) rows.push(targetRow('Testosterona livre', vm.freeNgdl.toFixed(2)+' ng/dL', a.ft, vm.freeNgdl));
+  rows.push(targetRow('Estradiol (E2)', e2 ? e2.toFixed(0)+' pg/mL' : null, a.e2, e2));
+  rows.push(targetRow('SHBG', shbg ? shbg+' nmol/L' : null, a.shbg, shbg));
+  document.getElementById('target-body').innerHTML = rows.join('');
+  document.getElementById('target-note').textContent = a.tt.nota ? 'Nota: ' + a.tt.nota + (a.e2 && a.e2.nota ? ' · E2: ' + a.e2.nota : '') : 'Faixas variam conforme o ensaio laboratorial.';
+
+  const imc = document.getElementById('imc-hint');
+  const peso = parseFloat(document.getElementById('p-peso').value)||0, alt = parseFloat(document.getElementById('p-altura').value)||0;
+  imc.textContent = (peso&&alt) ? 'IMC: '+(peso/Math.pow(alt/100,2)).toFixed(1)+' kg/m²' : 'IMC c/ peso + altura';
+}
+function statusClass(val, range) {
+  if (!val || !range || range.min == null) return '';
+  if (val < range.min) return 'low';
+  if (val > range.max) return 'high';
+  return 'ok';
+}
+function targetRow(nome, valStr, range, val) {
+  let pill = '<span class="pill na">sem dado</span>', target = '—';
+  if (range && range.min != null) target = range.min + '–' + range.max + ' ' + range.unit;
+  if (valStr && range && range.min != null) {
+    const c = statusClass(val, range);
+    pill = c === 'ok' ? '<span class="pill ok">na faixa</span>' : c === 'low' ? '<span class="pill low">abaixo</span>' : '<span class="pill high">acima</span>';
+  } else if (valStr) pill = '<span class="pill na">—</span>';
+  return `<tr><td><strong>${nome}</strong></td><td>${valStr||'—'}</td><td>${target}</td><td>${pill}</td></tr>`;
+}
+
+// ========= COMORBIDADES / CONTRA =========
+function renderChips() {
+  document.getElementById('comorb-group').innerHTML = COMORB.map(c=>`<label class="chip-check" id="chip-${c.id}"><input type="checkbox" onchange="toggleChip('${c.id}',this.checked)"> ${c.label}</label>`).join('');
+  document.getElementById('contra-group').innerHTML = CONTRA.map(c=>`<label class="chip-check danger" id="chip-${c.id}"><input type="checkbox" onchange="toggleChip('${c.id}',this.checked)"> ${c.label}</label>`).join('');
+}
+function toggleChip(id,on){ document.getElementById('chip-'+id).classList.toggle('on',on); renderRecs(); recalcAll(); }
+function chipOn(id){ const el=document.querySelector('#chip-'+id+' input'); return el?el.checked:false; }
+
+// ========= RECOMENDAÇÕES POR COMORBIDADE =========
+function renderRecs(){
+  const cont=document.getElementById('recs-container'); if(!cont)return;
+  const selected=COMORB.filter(c=>chipOn(c.id));
+  if(!selected.length){ cont.innerHTML=''; return; }
+  let html='<div class="subhead">Opções de implante sugeridas para este paciente</div>';
+  html+='<div class="info-box">Sugestões baseadas em literatura para as comorbidades marcadas. Doses iniciais de referência — a escolha e a dose final são do médico prescritor, com titulação por exame.</div>';
+  selected.forEach(c=>{
+    const recs=RECS[c.id]||[];
+    html+=`<div class="rx-block"><div class="rx-title">${c.label}</div><table class="target-table"><thead><tr><th>Ativo sugerido</th><th>Dose inicial (ref.)</th><th>Base</th><th></th></tr></thead><tbody>`;
+    recs.forEach(r=>{
+      const nome=PELLETS[r.ativo]?PELLETS[r.ativo].nome:r.ativo;
+      html+=`<tr><td><strong>${nome}</strong></td><td style="white-space:nowrap;color:var(--text-accent);font-weight:600;">${r.dose}</td><td style="color:var(--text-secondary);">${r.base}</td><td><button class="hist-btn" onclick="quickAdd('${r.ativo}')">+ Adicionar</button></td></tr>`;
+    });
+    html+='</tbody></table></div>';
+  });
+  cont.innerHTML=html;
+}
+function quickAdd(tipo){
+  if(!PELLETS[tipo]){ alert('Ativo indisponível na base.'); return; }
+  const idx=Math.min(3, PELLETS[tipo].doses.length-1);
+  addHormone(tipo, idx, 1);
+  alert(PELLETS[tipo].nome+' adicionado ao implante. Ajuste a dosagem na aba "Cálculo & Composição".');
+}
+function addByMg(tipo,mg){
+  const p=PELLETS[tipo]; if(!p)return;
+  let best=0,bd=Infinity;
+  p.doses.forEach((d,i)=>{const diff=Math.abs(d.mg-mg); if(diff<bd){bd=diff;best=i;}});
+  addHormone(tipo,best,1);
+}
+
+// ========= HORMÔNIOS =========
+function addHormone(tipo='estradiol', doseIdx=null, qtd=1) {
+  const id = ++counter, p = PELLETS[tipo];
+  hormones.push({ id, tipo, doseIdx: doseIdx!=null?doseIdx:Math.min(2,p.doses.length-1), qtd });
+  renderHormones();
+}
+function removeHormone(id){ const i=hormones.findIndex(h=>h.id===id); if(i>-1)hormones.splice(i,1); renderHormones(); }
+function onTipoChange(id,val){ const h=hormones.find(x=>x.id===id); if(h){h.tipo=val;h.doseIdx=Math.min(2,PELLETS[val].doses.length-1);renderHormones();} }
+function onDoseChange(id,idx){ const h=hormones.find(x=>x.id===id); if(h){h.doseIdx=parseInt(idx);computeSummary();} }
+function changeQty(id,d){ const h=hormones.find(x=>x.id===id); if(h){h.qtd=Math.max(1,(h.qtd||1)+d);renderHormones();} }
+function setQty(id,v){ const h=hormones.find(x=>x.id===id); if(h){h.qtd=Math.max(1,parseInt(v)||1);computeSummary();} }
+
+function computeOne(h){
+  const p=PELLETS[h.tipo], d=p.doses[h.doseIdx], qtd=h.qtd||1;
+  return { p, d, qtd, cargaMg:qtd*d.mg, libDia:d.lib!=null?qtd*d.lib:null, dMin:d.dMin, dMax:d.dMax };
+}
+function renderHormones(){
+  const list=document.getElementById('hormone-list'); list.innerHTML='';
+  hormones.forEach((h,idx)=>{
+    const p=PELLETS[h.tipo];
+    const opts=Object.keys(PELLETS).map(k=>`<option value="${k}" ${k===h.tipo?'selected':''}>${PELLETS[k].nome}</option>`).join('');
+    const un=p.unidade||'mg';
+    const doseOpts=p.doses.map((d,i)=>`<option value="${i}" ${i===h.doseIdx?'selected':''}>${d.mg} ${un}${d.lib!=null?' · '+d.lib.toFixed(2).replace('.',',')+' '+un+'/dia':''} · ${d.fonte}</option>`).join('');
+    const card=document.createElement('div');
+    card.className='hormone-card'+(p.aromatiza?' aromat':'')+(p.ai?' ai':'');
+    card.innerHTML=`
+      <div class="hormone-card-head">
+        <span class="hormone-num">${idx+1}</span>
+        <span class="hormone-card-title">${p.nome}</span>
+        ${p.aromatiza?'<span class="flag flag-w">Aromatiza</span>':''}
+        ${p.ai?'<span class="flag flag-p">Inib. aromatase</span>':''}
+        ${p.estro?'<span class="flag flag-w">Estrogênio</span>':''}
+        <button class="btn-remove" onclick="removeHormone(${h.id})">Remover</button>
+      </div>
+      <div class="hormone-inputs">
+        <div class="field"><label>Ativo</label><select onchange="onTipoChange(${h.id},this.value)">${opts}</select></div>
+        <div class="field"><label>Dosagem do pellet</label><select onchange="onDoseChange(${h.id},this.value)">${doseOpts}</select></div>
+        <div class="field"><label>Quantidade</label><div class="qty-wrap"><button class="qty-btn" onclick="changeQty(${h.id},-1)">−</button><input type="number" value="${h.qtd}" min="1" oninput="setQty(${h.id},this.value)"><button class="qty-btn" onclick="changeQty(${h.id},1)">+</button></div></div>
+      </div>
+      <div class="hormone-result">
+        <div class="mini-metric"><div class="mini-metric-label">Liberação/dia</div><div class="mini-metric-val" id="r-lib-${h.id}">—</div></div>
+        <div class="mini-metric"><div class="mini-metric-label">Carga total</div><div class="mini-metric-val" id="r-mg-${h.id}">0</div></div>
+        <div class="mini-metric"><div class="mini-metric-label">Duração</div><div class="mini-metric-val" id="r-dur-${h.id}">—</div></div>
+        <div class="mini-metric"><div class="mini-metric-label">Espessura</div><div class="mini-metric-val" id="r-esp-${h.id}">—</div></div>
+      </div>`;
+    list.appendChild(card);
+  });
+  computeSummary();
+}
+
+// ========= OTIMIZADOR =========
+let optResult = null;
+function renderOptSelect(){
+  document.getElementById('opt-ativo').innerHTML = Object.keys(PELLETS).map(k=>`<option value="${k}">${PELLETS[k].nome}</option>`).join('');
+}
+function runOptimizer(){
+  const tipo=document.getElementById('opt-ativo').value, alvo=parseFloat(document.getElementById('opt-alvo').value)||0;
+  const el=document.getElementById('opt-result');
+  if(!alvo){ el.textContent='Informe a carga-alvo em mg.'; optResult=null; return; }
+  const sizes=[...new Set(PELLETS[tipo].doses.map(d=>d.mg))].sort((a,b)=>b-a);
+  let rest=alvo, combo={};
+  sizes.forEach(s=>{ while(rest>=s-0.001){ combo[s]=(combo[s]||0)+1; rest-=s; } });
+  if(rest>0.001 && sizes.length){ const min=sizes[sizes.length-1]; combo[min]=(combo[min]||0)+1; rest-=min; }
+  const total=Object.entries(combo).reduce((a,[mg,q])=>a+mg*q,0);
+  const nPellets=Object.values(combo).reduce((a,q)=>a+q,0);
+  const desc=Object.entries(combo).map(([mg,q])=>`${q}× ${mg} mg`).join(' + ');
+  optResult={tipo,combo};
+  el.innerHTML=`${PELLETS[tipo].nome}: <strong>${desc}</strong> = ${total} mg em ${nPellets} pellet(s) ${total!==alvo?`(alvo ${alvo} mg — mais próximo possível)`:''}`;
+}
+function applyOptimizer(){
+  if(!optResult){ runOptimizer(); if(!optResult) return; }
+  const {tipo,combo}=optResult;
+  Object.entries(combo).forEach(([mg,q])=>{
+    const idx=PELLETS[tipo].doses.findIndex(d=>d.mg==mg);
+    if(idx>-1) addHormone(tipo, idx, q);
+  });
+}
+
+// ========= RESUMO =========
+function computeSummary(){
+  let totalPellets=0,totalMg=0,durMin=Infinity,durMax=0,hasTesto=false,hasEstro=false,hasProgest=false,hasAI=false,testoLibDia=0;
+  const rx=[];
+  hormones.forEach(h=>{
+    const r=computeOne(h), p=PELLETS[h.tipo], un=p.unidade||'mg';
+    totalPellets+=r.qtd; totalMg+=r.cargaMg; durMin=Math.min(durMin,r.dMin); durMax=Math.max(durMax,r.dMax);
+    if(p.aromatiza){hasTesto=true;testoLibDia+=(r.libDia||0);}
+    if(p.estro)hasEstro=true; if(p.progest)hasProgest=true; if(p.ai)hasAI=true;
+    const set=(sfx,html)=>{const e=document.getElementById('r-'+sfx+'-'+h.id); if(e)e.innerHTML=html;};
+    set('lib', r.libDia!=null?r.libDia.toFixed(2).replace('.',',')+' <span class="mini-metric-unit">'+un+'</span>':'n/d');
+    set('mg', r.cargaMg+' <span class="mini-metric-unit">'+un+'</span>');
+    set('dur', r.dMin+'–'+r.dMax+' <span class="mini-metric-unit">m</span>');
+    set('esp', r.d.esp+' <span class="mini-metric-unit">mm</span>');
+    rx.push(`<div class="rx-row"><span>${p.nome} — ${r.qtd} × ${r.d.mg} ${un}${r.libDia!=null?' ('+r.libDia.toFixed(2).replace('.',',')+' '+un+'/dia)':''} · ${r.d.fonte}</span><span class="rx-conc">${r.cargaMg} ${un}</span></div>`);
+  });
+  document.getElementById('s-pellets').textContent=totalPellets;
+  document.getElementById('s-mg').textContent=totalMg.toFixed(0);
+  document.getElementById('s-dur').textContent=hormones.length?(durMin===durMax?durMin:durMin+'–'+durMax):'—';
+  const custoMg=parseFloat(document.getElementById('custo-mg').value)||0;
+  document.getElementById('s-custo').textContent=custoMg>0?(totalMg*custoMg).toFixed(2):'—';
+  document.getElementById('rx-list').innerHTML=rx.length?rx.join(''):'<div class="rx-empty">Adicione hormônios.</div>';
+
+  // alertas de cálculo
+  const alerts=[];
+  if(hasTesto&&!hasAI){
+    const risk=calcRisk(testoLibDia);
+    if(risk.nivel!=='baixo') alerts.push(`<div class="${risk.nivel==='alto'?'warn-box':'info-box'}"><strong>Aromatização ${risk.nivel.toUpperCase()}:</strong> testosterona sem inibidor de aromatase. Considerar anastrozol (${risk.aiSug}) + dosagem de estradiol. Ver aba "Aromatização".</div>`);
+  }
+  const utero=document.getElementById('p-utero').value;
+  if(hasEstro&&!hasProgest&&utero==='sim') alerts.push(`<div class="warn-box"><strong>Proteção endometrial:</strong> estrogênio sem progestágeno em paciente com útero presente. Associar progestágeno (ex.: progesterona/drospirenona) para proteção do endométrio.</div>`);
+  document.getElementById('calc-alerts').innerHTML=alerts.join('');
+
+  renderSuggestions();
+  renderMonitor(hasTesto,hasEstro);
+  if(document.getElementById('tab-seg').classList.contains('active')) renderSeg();
+  if(document.getElementById('tab-aromat').classList.contains('active')) renderAromat();
+}
+
+// ========= SUGESTÃO DE PROTOCOLO (auto) =========
+const ADD_MG = {estradiol:25, estriol:75, progesterona:50, gestrinona:40, drospirenona:50, ciproterona:100, oxandrolona:50, tadalafil:50, nad:200, metformina:100, ocitocina:500, coenzimaq10:100, anastrozol:5, testosterona:100};
+
+function testoDoseSuggestion(){
+  const sexo=document.getElementById('p-sexo').value;
+  const peso=parseFloat(document.getElementById('p-peso').value)||0, gord=parseFloat(document.getElementById('p-gordura').value)||0, idade=parseFloat(document.getElementById('p-idade').value)||0, fator=parseFloat(document.getElementById('p-fator').value)||0.3;
+  if(sexo==='M'){
+    return {label:'≈ 600–1200 mg', addMg:200, formula:'♂ protocolo masculino: iniciar e titular ao pico sérico ~900–1100 ng/dL (reinserir <500–600). Some pellets de 200 mg até o alvo; idosos costumam precisar de mais. A fórmula de composição corporal é feminina e NÃO se aplica a homens.'};
+  }
+  if(peso&&gord&&idade){
+    let d=peso*(gord/100)*fator+(100-idade); d=Math.max(50,Math.min(150,d));
+    return {label:Math.round(d)+' mg', addMg:Math.round(d), formula:`♀ ${peso} × ${(gord/100).toFixed(2)} × ${fator} + (100 − ${idade}) → ${Math.round(d)} mg · limitado à faixa feminina 50–150 mg`};
+  }
+  return {label:'50–150 mg (comum 100)', addMg:100, formula:'♀ preencha peso, % gordura e idade para estimar a dose individual (faixa 50–150 mg).'};
+}
+
+function buildSuggestions(){
+  const sexo=document.getElementById('p-sexo').value, status=document.getElementById('p-status').value, utero=document.getElementById('p-utero').value;
+  const selected=COMORB.filter(c=>chipOn(c.id));
+  const items=[], seen={};
+  const push=(ativo,label,addMg,motivo)=>{
+    if(!PELLETS[ativo])return;
+    if(seen[ativo]){ if(motivo && seen[ativo].motivo.indexOf(motivo)<0) seen[ativo].motivo+=' · '+motivo; return; }
+    const it={ativo,label,addMg,motivo}; items.push(it); seen[ativo]=it;
+  };
+  // 1) por comorbidade marcada
+  selected.forEach(c=>{
+    (RECS[c.id]||[]).forEach(r=>{
+      if(r.ativo==='testosterona'){ const t=testoDoseSuggestion(); push('testosterona',t.label,t.addMg,c.label); }
+      else push(r.ativo, r.dose, ADD_MG[r.ativo], c.label);
+    });
+  });
+  // 2) default quando nada marcado
+  if(!selected.length){
+    if(sexo==='M'){ const t=testoDoseSuggestion(); push('testosterona',t.label,t.addMg,'reposição androgênica masculina'); }
+    else if(status==='pos'){ push('estradiol','12,5–25 mg',25,'sintomas de menopausa'); const t=testoDoseSuggestion(); push('testosterona',t.label,t.addMg,'libido / energia'); }
+  }
+  // 3) segurança: proteção endometrial
+  const temEstro=items.some(i=>PELLETS[i.ativo].estro), temProg=items.some(i=>PELLETS[i.ativo].progest);
+  if(temEstro && !temProg && utero==='sim') push('progesterona','50–100 mg',50,'proteção endometrial (útero + estrogênio)');
+  // 4) aromatização (perfil + E2 basal)
+  const temTesto=items.some(i=>i.ativo==='testosterona');
+  if(temTesto && !items.some(i=>PELLETS[i.ativo].ai)){
+    const risk=calcRisk(0);
+    if(risk.nivel!=='baixo') push('anastrozol', risk.nivel==='alto'?'10 mg':'5 mg', risk.nivel==='alto'?10:5, 'controle de aromatização ('+risk.nivel+')');
+  }
+  // 5) nota laboratorial
+  const tt=getTT(), a=alvos(); let note='';
+  if(tt){ if(tt<a.tt.min) note='Testosterona basal <strong>abaixo</strong> do alvo — reposição justificada.'; else if(tt>a.tt.max) note='Testosterona basal <strong>acima</strong> do alvo — reavaliar necessidade antes de repor.'; else note='Testosterona basal <strong>na faixa</strong> — repor apenas se sintomático, com a menor dose.'; }
+  return {items, note};
+}
+
+function renderSuggestions(){
+  const el=document.getElementById('suggest-list'); if(!el)return;
+  const {items,note}=buildSuggestions();
+  if(!items.length){ el.innerHTML='<div class="helper">Marque comorbidades na aba <strong>Segurança</strong> ou preencha sexo/status para gerar sugestões automáticas de substâncias e doses.</div>'; return; }
+  let html='<table class="target-table"><thead><tr><th>Substância</th><th>Dose sugerida</th><th>Motivo</th><th></th></tr></thead><tbody>';
+  items.forEach(it=>{
+    html+=`<tr><td><strong>${PELLETS[it.ativo].nome}</strong></td><td style="white-space:nowrap;color:var(--text-accent);font-weight:700;">${it.label}</td><td style="color:var(--text-secondary);font-size:12px;">${it.motivo}</td><td><button class="hist-btn" onclick="addByMg('${it.ativo}',${it.addMg||0})">+ Adicionar</button></td></tr>`;
+  });
+  html+='</tbody></table>';
+  if(note) html+=`<div class="info-box" style="margin-top:10px;">${note}</div>`;
+  const t=testoDoseSuggestion();
+  html+=`<div class="suggest-formula" style="margin-top:10px;">${t.formula}</div>`;
+  el.innerHTML=html;
+}
+
+// ========= MONITORIZAÇÃO =========
+function renderMonitor(hasTesto,hasEstro){
+  const labs=['Testosterona total'];
+  if(hasTesto){ labs.push('Testosterona livre + SHBG','Estradiol','Hematócrito'); }
+  if(hasEstro){ labs.push('Estradiol'); }
+  const painel=[...new Set(labs)].join(', ');
+  document.getElementById('monitor-block').innerHTML=`
+    <div class="timeline-row"><span class="timeline-day">Basal</span><span class="timeline-desc">Antes da inserção: ${painel}${hasEstro?', avaliação de risco tromboembólico':''}. Confirmar indicação e contraindicações.</span></div>
+    <div class="timeline-row"><span class="timeline-day">~4 semanas</span><span class="timeline-desc">Pico esperado. Dosar nível para verificar se caiu na faixa-alvo e ajustar próxima dose.</span></div>
+    <div class="timeline-row"><span class="timeline-day">~3 meses</span><span class="timeline-desc">Avaliar sintomas e ${hasTesto?'estradiol (aromatização)':'resposta clínica'}.</span></div>
+    <div class="timeline-row"><span class="timeline-day">4–6 meses</span><span class="timeline-desc">Nível de vale / retorno dos sintomas → planejar reinserção. Reavaliar dose.</span></div>`;
+}
+
+// ========= AROMATIZAÇÃO =========
+function calcRisk(testoLibDia){
+  const sexo=document.getElementById('p-sexo').value, gord=parseFloat(document.getElementById('p-gordura').value)||0, idade=parseFloat(document.getElementById('p-idade').value)||0, e2=getE2();
+  let score=0; const f=[];
+  const gAlta=sexo==='M'?25:32, gMod=sexo==='M'?20:28;
+  if(gord>=gAlta){score+=3;f.push(`% gordura elevada (${gord}%)`);} else if(gord>=gMod){score+=2;f.push(`% gordura moderada (${gord}%)`);}
+  if(idade>=55){score+=2;f.push('Idade ≥ 55');} else if(idade>=45){score+=1;f.push('Idade 45–54');}
+  if(chipOn('obesidade')){score+=2;f.push('Obesidade');}
+  if(chipOn('ri')){score+=2;f.push('Resistência insulínica / DM2');}
+  if(chipOn('metab')){score+=1;f.push('Síndrome metabólica');}
+  if(testoLibDia>=1.2){score+=2;f.push('Carga alta de testosterona (≥1,2 mg/dia)');} else if(testoLibDia>=0.7){score+=1;f.push('Carga moderada de testosterona');}
+  if(e2){ const lim=sexo==='M'?60:60; if(e2>=lim){score+=3;f.push(`Estradiol basal elevado (${e2.toFixed(0)} pg/mL)`);} else if(e2>=40){score+=1;f.push(`Estradiol basal limítrofe (${e2.toFixed(0)} pg/mL)`);} }
+  let nivel='baixo',pct=25,cor='var(--text-success)',aiSug='monitorar; anastrozol geralmente desnecessário';
+  if(score>=7){nivel='alto';pct=92;cor='var(--text-danger)';aiSug=sexo==='M'?'~16 mg co-implante ou 0,5 mg oral 3×/sem':'~8 mg co-implante / ~120 mg testo';}
+  else if(score>=4){nivel='moderado';pct=60;cor='var(--text-warning)';aiSug=sexo==='M'?'~12–16 mg co-implante':'~6–8 mg co-implante';}
+  return {score,nivel,pct,cor,fatores:f,aiSug};
+}
+function renderAromat(){
+  let testoLibDia=0,hasTesto=false,hasAI=false;
+  hormones.forEach(h=>{ if(PELLETS[h.tipo].aromatiza){hasTesto=true;testoLibDia+=(computeOne(h).libDia||0);} if(PELLETS[h.tipo].ai)hasAI=true; });
+  const r=calcRisk(testoLibDia);
+  document.getElementById('risk-container').innerHTML=`
+    <div class="risk-panel ${r.nivel}">
+      <div class="risk-level">Risco ${r.nivel.toUpperCase()}</div>
+      <div class="risk-sub">${hasTesto?'Testosterona no implante: '+testoLibDia.toFixed(2).replace('.',',')+' mg/dia':'Nenhuma testosterona no implante.'} · Escore ${r.score}</div>
+      <div class="risk-bar"><div class="risk-fill" style="width:${r.pct}%;background:${r.cor};"></div></div>
+      ${r.fatores.length?'<ul class="risk-factors">'+r.fatores.map(x=>`<li>${x}</li>`).join('')+'</ul>':'<div class="risk-sub">Sem fatores de risco registrados.</div>'}
+    </div>`;
+  const mg=document.getElementById('manage-container');
+  if(!hasTesto) mg.innerHTML=`<div class="pro-box">Sem androgênio aromatizável no implante — manejo não se aplica.</div>`;
+  else if(hasAI) mg.innerHTML=`<div class="success-box"><strong>Inibidor de aromatase já incluído.</strong> Manter monitorização de estradiol para ajustar e evitar supressão excessiva.</div>`;
+  else {
+    const cls=r.nivel==='alto'?'warn-box':(r.nivel==='moderado'?'info-box':'success-box');
+    const txt=r.nivel==='baixo'?'Risco baixo: monitorização de estradiol costuma bastar; anastrozol raramente necessário de rotina.':`Risco ${r.nivel}: considerar co-implante de anastrozol — <strong>${r.aiSug}</strong> — com dosagem de estradiol antes e durante, associado a redução de gordura corporal.`;
+    mg.innerHTML=`<div class="${cls}"><strong>Conduta:</strong> ${txt}</div>`;
+  }
+}
+
+// ========= SEGURANÇA =========
+function renderSeg(){
+  const hormFlags={estro:false,androgenio:false,progest:false};
+  hormones.forEach(h=>{ const p=PELLETS[h.tipo]; if(p.estro)hormFlags.estro=true; if(p.aromatiza||h.tipo==='oxandrolona')hormFlags.androgenio=true; if(p.progest)hormFlags.progest=true; });
+  const alerts=[];
+  CONTRA.forEach(c=>{
+    if(chipOn(c.id)){
+      const relevante=c.hormones.some(cat=>hormFlags[cat]);
+      const cls=relevante?'warn-box':'info-box';
+      const pre=relevante?'⚠ APLICA-SE ao implante atual — ':'Registrado — ';
+      alerts.push(`<div class="${cls}"><strong>${c.label}:</strong> ${pre}${c.msg}</div>`);
+    }
+  });
+  document.getElementById('seg-alerts').innerHTML=alerts.length?alerts.join(''):'<div class="info-box">Sem contraindicações marcadas que se apliquem ao implante atual.</div>';
+  // endométrio
+  const utero=document.getElementById('p-utero').value;
+  const endo=document.getElementById('endo-alert');
+  if(hormFlags.estro&&utero==='sim'){
+    endo.innerHTML=hormFlags.progest?`<div class="success-box">Estrogênio + progestágeno com útero presente — proteção endometrial contemplada.</div>`:`<div class="warn-box"><strong>Falta proteção endometrial:</strong> estrogênio sem progestágeno em paciente com útero. Associar progestágeno.</div>`;
+  } else endo.innerHTML='';
+}
+
+// ========= HISTÓRICO =========
+function snapshot(){
+  return {
+    ts: Date.now(),
+    nome: document.getElementById('p-nome').value||'Sem nome',
+    sexo: document.getElementById('p-sexo').value, idade: document.getElementById('p-idade').value,
+    peso: document.getElementById('p-peso').value, gordura: document.getElementById('p-gordura').value,
+    labs:{ tt:document.getElementById('lab-tt').value, shbg:document.getElementById('lab-shbg').value, e2:document.getElementById('lab-e2').value },
+    implante: hormones.map(h=>({tipo:h.tipo,doseIdx:h.doseIdx,qtd:h.qtd})),
+    insData: document.getElementById('ins-data').value, insLocal: document.getElementById('ins-local').value,
+    insLote: document.getElementById('ins-lote').value, insObs: document.getElementById('ins-obs').value,
+  };
+}
+function estimatedRecall(rec){
+  if(!rec.insData) return null;
+  let dmax=6; rec.implante.forEach(x=>{ const d=PELLETS[x.tipo].doses[x.doseIdx]; if(d)dmax=Math.min(dmax,d.dMax); });
+  const dt=new Date(rec.insData); dt.setMonth(dt.getMonth()+dmax);
+  return dt;
+}
+function saveCurrent(){
+  const snap=snapshot();
+  if(!snap.implante.length){ alert('Monte o implante antes de salvar.'); return; }
+  history.unshift(snap); persist(); renderHistory();
+  const el=document.querySelector('.nav-btn'); // feedback simples
+  alert('Registro salvo no histórico.');
+}
+function renderHistory(){
+  const el=document.getElementById('hist-list');
+  if(!history.length){ el.innerHTML='<div class="rx-empty">Nenhum registro salvo ainda.</div>'; return; }
+  const today=new Date();
+  el.innerHTML=history.map((r,i)=>{
+    const comp=r.implante.map(x=>{const d=PELLETS[x.tipo].doses[x.doseIdx];return `${x.qtd}×${d.mg}mg ${PELLETS[x.tipo].nome}`;}).join(' + ');
+    const recall=estimatedRecall(r);
+    let recallStr='';
+    if(recall){ const diff=Math.round((recall-today)/(1000*60*60*24)); recallStr=` · reinserção ~${recall.toLocaleDateString('pt-BR')}${diff<=30?` <span class="recall-soon">(em ${diff} dias)</span>`:''}`; }
+    return `<div class="hist-item">
+      <div class="hist-info"><strong>${r.nome}</strong> — ${comp||'sem implante'}<div class="hist-meta">${new Date(r.ts).toLocaleString('pt-BR')}${r.insData?' · inserção '+new Date(r.insData).toLocaleDateString('pt-BR'):''}${recallStr}${r.insLote?' · lote '+r.insLote:''}</div></div>
+      <div class="hist-actions"><button class="hist-btn" onclick="loadRecord(${i})">Carregar</button><button class="hist-btn" onclick="delRecord(${i})">Excluir</button></div>
+    </div>`;
+  }).join('');
+}
+function loadRecord(i){
+  const r=history[i];
+  document.getElementById('p-nome').value=r.nome==='Sem nome'?'':r.nome;
+  document.getElementById('p-sexo').value=r.sexo; document.getElementById('p-idade').value=r.idade||'';
+  document.getElementById('p-peso').value=r.peso||''; document.getElementById('p-gordura').value=r.gordura||'';
+  document.getElementById('lab-tt').value=r.labs.tt||''; document.getElementById('lab-shbg').value=r.labs.shbg||''; document.getElementById('lab-e2').value=r.labs.e2||'';
+  document.getElementById('ins-data').value=r.insData||''; document.getElementById('ins-local').value=r.insLocal||''; document.getElementById('ins-lote').value=r.insLote||''; document.getElementById('ins-obs').value=r.insObs||'';
+  hormones.length=0; counter=0;
+  r.implante.forEach(x=>addHormone(x.tipo,x.doseIdx,x.qtd));
+  recalcAll();
+  alert('Registro carregado. Veja "Paciente & Exames" e "Cálculo".');
+}
+function delRecord(i){ if(confirm('Excluir este registro?')){ history.splice(i,1); persist(); renderHistory(); } }
+function persist(){ try{ localStorage.setItem('myclinic_pellets_hist', JSON.stringify(history)); }catch(e){} }
+function loadPersisted(){ try{ const d=localStorage.getItem('myclinic_pellets_hist'); if(d)history=JSON.parse(d); }catch(e){} }
+function exportJSON(){
+  const blob=new Blob([JSON.stringify(history,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='historico-implantes-myclinic.json'; a.click();
+}
+function importJSON(ev){
+  const file=ev.target.files[0]; if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{ try{ const d=JSON.parse(e.target.result); if(Array.isArray(d)){ history=d; persist(); renderHistory(); alert('Backup importado.'); } else alert('Arquivo inválido.'); }catch(err){ alert('Erro ao ler o arquivo.'); } };
+  reader.readAsText(file);
+}
+
+// ========= TABELAS ESTÁTICAS =========
+function renderTabelas(){
+  const grupos={}; Object.values(PELLETS).forEach(p=>{(grupos[p.grupo]=grupos[p.grupo]||[]).push(p);});
+  let rows='';
+  Object.keys(grupos).forEach(g=>{
+    rows+=`<tr class="grp-row"><td colspan="6">${g}</td></tr>`;
+    grupos[g].forEach(p=>{ const un=p.unidade||'mg'; p.doses.forEach(d=>{
+      const lib=d.lib!=null?(d.lib.toFixed(2).replace('.',',')+' '+(un==='UI'?'UI/dia':'mg/dia')):'—';
+      rows+=`<tr><td><strong>${p.nome}</strong> ${d.mg} ${un}</td><td>${lib}</td><td>${d.dMin}–${d.dMax} meses</td><td>${d.esp} mm</td><td>${d.troc} mm</td><td><span class="helper">${d.fonte}</span></td></tr>`;
+    }); });
+  });
+  document.getElementById('tabelas-body').innerHTML=rows;
+}
+function renderDoencas(){ document.getElementById('doencas-body').innerHTML=DOENCAS.map(d=>`<tr><td><strong>${d.cond}</strong></td><td>${d.ativo}</td><td>${d.dose}</td><td>${d.eq}</td></tr>`).join(''); }
+
+function recalcAll(){ renderLabs(); computeSummary(); }
+
+// ========= INIT =========
+renderChips();
+renderOptSelect();
+addHormone('estradiol');
+renderTabelas();
+renderDoencas();
+loadPersisted();
+renderHistory();
+renderLabs();
+</script>
+</body>
+</html>
